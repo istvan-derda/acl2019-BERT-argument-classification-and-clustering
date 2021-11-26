@@ -65,6 +65,21 @@ input_examples = [
     InputExample(text_a='electric vehicles',
                  text_b='The carbon-footprint is bigger than combustion-engines.',
                  label='Argument_against'),  # fails
+    InputExample(text_a='sex education in schools',
+                 text_b='It is important to teach children about STDs',
+                 label='Argument_for'),
+    InputExample(text_a='sex education in schools',
+                 text_b='It makes children homosexual.',
+                 label='Argument_against'),
+    InputExample(text_a='sex education in schools',
+                 text_b='Sex is fun.',
+                 label='NoArgument'), # Argument_for
+    InputExample(text_a='sex education in schools',
+                 text_b='Sex education is about teaching children safe sex-practices.',
+                 label='NoArgument'), # Argument_for
+    InputExample(text_a='sex education in schools',
+                 text_b='I had sex education in school.',
+                 label='NoArgument'),
 ]
 
 

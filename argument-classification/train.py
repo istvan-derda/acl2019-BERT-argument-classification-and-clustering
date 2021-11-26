@@ -6,25 +6,24 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import glob
-import os
-import csv
-import logging
 import argparse
+import csv
+import glob
+import logging
+import os
 import random
-from tqdm import tqdm, trange
 
 import numpy as np
 import torch
-from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
-from torch.utils.data.distributed import DistributedSampler
-
-from pytorch_pretrained_bert.tokenization import BertTokenizer
+from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE, WEIGHTS_NAME, CONFIG_NAME
 from pytorch_pretrained_bert.modeling import BertForSequenceClassification
 from pytorch_pretrained_bert.optimization import BertAdam
-from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE, WEIGHTS_NAME, CONFIG_NAME
+from pytorch_pretrained_bert.tokenization import BertTokenizer
+from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
+from torch.utils.data.distributed import DistributedSampler
+from tqdm import tqdm, trange
 
-logging.basicConfig(format='%(message)s', #"format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
+logging.basicConfig(format='%(message)s',  # "format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -61,16 +60,14 @@ class InputFeatures(object):
         self.label_id = label_id
 
 
-
-
 class UKPProcessor(object):
     def __init__(self, binarize_labels=False, use_all_data=False):
         self.binarize_labels = binarize_labels
-        self.use_all_data=use_all_data
+        self.use_all_data = use_all_data
 
     def _read_dataset(self, data_dir):
         sentences = []
-        for filepath in glob.glob(os.path.join(data_dir,'*.tsv')):
+        for filepath in glob.glob(os.path.join(data_dir, '*.tsv')):
 
             lines = open(filepath).readlines()
 
@@ -80,7 +77,7 @@ class UKPProcessor(object):
                 topic = splits[0]
                 text = splits[4]
                 label = self._convert_label(splits[5].strip())
-                data_split_set = splits[6] #train/dev/test value
+                data_split_set = splits[6]  # train/dev/test value
 
                 sentences.append([text, label, topic, data_split_set])
 
@@ -115,7 +112,7 @@ class UKPProcessor(object):
             if self.use_all_data:
                 examples.append(self._get_input_example(guid, topic, sentence, label))
             else:
-                if data_split_set != set_type: #Train only on train_split, evaluate only on test set
+                if data_split_set != set_type:  # Train only on train_split, evaluate only on test set
                     continue
 
                 if set_type == 'test' and topic == test_topic:
@@ -163,7 +160,6 @@ class IBMProcessor(object):
     def get_labels(self):
         return ["0", "1"]
 
-
     def _create_examples(self, data_tuples, set_type):
         """Creates examples for the training and dev sets."""
         examples = []
@@ -189,6 +185,7 @@ class IBMProcessorTopicSentence(IBMProcessor):
         label = row['label']
         return InputExample(guid=guid, text_a=topic, text_b=sentence, label=label)
 
+
 class IBMProcessorConceptSentence(IBMProcessor):
     def _get_input_example(self, guid, row):
         topic = row['topic']
@@ -196,7 +193,6 @@ class IBMProcessorConceptSentence(IBMProcessor):
         sentence = row['candidate']
         label = row['label']
         return InputExample(guid=guid, text_a=topic_concept, text_b=sentence, label=label)
-
 
 
 def convert_examples_to_features(examples, label_list, max_seq_length, tokenizer):
@@ -211,8 +207,6 @@ def convert_examples_to_features(examples, label_list, max_seq_length, tokenizer
 
         len_tokens_a = len(tokens_a)
         len_tokens_b = 0
-
-
 
         if example.text_b:
             tokens_b = tokenizer.tokenize(example.text_b)
@@ -266,9 +260,9 @@ def convert_examples_to_features(examples, label_list, max_seq_length, tokenizer
         input_mask += padding
         segment_ids += padding
 
-        assert len(input_ids)==max_seq_length
-        assert len(input_mask)==max_seq_length
-        assert len(segment_ids)==max_seq_length
+        assert len(input_ids) == max_seq_length
+        assert len(input_mask) == max_seq_length
+        assert len(segment_ids) == max_seq_length
 
         label_id = label_map[example.label]
         if ex_index < 1 and example.guid is not None and example.guid.startswith('train'):
@@ -313,7 +307,7 @@ def _truncate_seq_pair(tokens_a, tokens_b, max_length):
 
 def accuracy(out, labels):
     outputs = np.argmax(out, axis=1)
-    return np.sum(outputs==labels)
+    return np.sum(outputs == labels)
 
 
 def warmup_linear(x, warmup=0.002):
@@ -417,15 +411,12 @@ def main():
                         type=int,
                         help="binarize_labels.")
 
-
     parser.add_argument("--use_all_data",
                         default=0,
                         type=int,
                         help="binarize_labels.")
 
     args = parser.parse_args()
-
-
 
     processors = {
         "ukp-sentence": UKPProcessor,
@@ -437,12 +428,12 @@ def main():
     }
 
     binarize_labels = False if args.binarize_labels == 0 else True
-    use_all_data = False if args.use_all_data==0 else True
+    use_all_data = False if args.use_all_data == 0 else True
 
     if args.test_set is not None:
-        logger.info("Test set: "+args.test_set)
+        logger.info("Test set: " + args.test_set)
 
-    if args.local_rank==-1 or args.no_cuda:
+    if args.local_rank == -1 or args.no_cuda:
         device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
         n_gpu = torch.cuda.device_count()
     else:
@@ -452,7 +443,7 @@ def main():
         # Initializes the distributed backend which will take care of sychronizing nodes/GPUs
         torch.distributed.init_process_group(backend='nccl')
     logger.info("device: {} n_gpu: {}, distributed training: {}, 16-bits training: {}".format(
-        device, n_gpu, bool(args.local_rank!=-1), args.fp16))
+        device, n_gpu, bool(args.local_rank != -1), args.fp16))
 
     if args.gradient_accumulation_steps < 1:
         raise ValueError("Invalid gradient_accumulation_steps parameter: {}, should be >= 1".format(
@@ -502,7 +493,7 @@ def main():
     if args.fp16:
         model.half()
     model.to(device)
-    if args.local_rank!=-1:
+    if args.local_rank != -1:
         try:
             from apex.parallel import DistributedDataParallel as DDP
         except ImportError:
@@ -521,7 +512,7 @@ def main():
         {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
     ]
     t_total = num_train_steps
-    if args.local_rank!=-1:
+    if args.local_rank != -1:
         t_total = t_total // torch.distributed.get_world_size()
     if args.fp16:
         try:
@@ -535,7 +526,7 @@ def main():
                               lr=args.learning_rate,
                               bias_correction=False,
                               max_grad_norm=1.0)
-        if args.loss_scale==0:
+        if args.loss_scale == 0:
             optimizer = FP16_Optimizer(optimizer, dynamic_loss_scale=True)
         else:
             optimizer = FP16_Optimizer(optimizer, static_loss_scale=args.loss_scale)
@@ -554,7 +545,6 @@ def main():
             for idx, example in enumerate(train_examples):
                 writer.write("%s\t%s\t%s\n" % (example.label, example.text_a, example.text_b))
 
-
         train_features = convert_examples_to_features(
             train_examples, label_list, args.max_seq_length, tokenizer)
         logger.info("***** Running training *****")
@@ -567,7 +557,7 @@ def main():
         all_segment_ids = torch.tensor([f.segment_ids for f in train_features], dtype=torch.long)
         all_label_ids = torch.tensor([f.label_id for f in train_features], dtype=torch.long)
         train_data = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids)
-        if args.local_rank==-1:
+        if args.local_rank == -1:
             train_sampler = RandomSampler(train_data)
         else:
             train_sampler = DistributedSampler(train_data)
@@ -594,7 +584,7 @@ def main():
                 tr_loss += loss.item()
                 nb_tr_examples += input_ids.size(0)
                 nb_tr_steps += 1
-                if (step + 1) % args.gradient_accumulation_steps==0:
+                if (step + 1) % args.gradient_accumulation_steps == 0:
                     # modify learning rate with special warm up BERT uses
                     lr_this_step = args.learning_rate * warmup_linear(global_step / t_total, args.warmup_proportion)
                     for param_group in optimizer.param_groups:
@@ -629,14 +619,15 @@ def main():
         model = BertForSequenceClassification.from_pretrained(args.bert_model, num_labels=num_labels)
     model.to(device)
 
-
-    if args.do_eval and (args.local_rank==-1 or torch.distributed.get_rank()==0):
+    if args.do_eval and (args.local_rank == -1 or torch.distributed.get_rank() == 0):
         eval_results_filename = "test_results.txt"
         eval_prediction_filename = "test_predictions.txt"
-        do_evaluation(processor, args, label_list, tokenizer, model, device, tr_loss, nb_tr_steps, global_step, task_name, eval_results_filename, eval_prediction_filename)
+        do_evaluation(processor, args, label_list, tokenizer, model, device, tr_loss, nb_tr_steps, global_step,
+                      task_name, eval_results_filename, eval_prediction_filename)
 
 
-def do_evaluation(processor, args, label_list, tokenizer, model, device, tr_loss, nb_tr_steps, global_step, task_name, eval_results_filename, eval_prediction_filename):
+def do_evaluation(processor, args, label_list, tokenizer, model, device, tr_loss, nb_tr_steps, global_step, task_name,
+                  eval_results_filename, eval_prediction_filename):
     eval_examples = processor.get_test_examples(args.data_dir, args.test_set)
     eval_features = convert_examples_to_features(
         eval_examples, label_list, args.max_seq_length, tokenizer)
@@ -678,13 +669,12 @@ def do_evaluation(processor, args, label_list, tokenizer, model, device, tr_loss
         nb_eval_examples += input_ids.size(0)
         nb_eval_steps += 1
 
-
     eval_accuracy = eval_accuracy / nb_eval_examples
     loss = tr_loss / nb_tr_steps if args.do_train else None
     result = {
-              'eval_accuracy': eval_accuracy,
-              'global_step': global_step,
-              'train_loss': loss}
+        'eval_accuracy': eval_accuracy,
+        'global_step': global_step,
+        'train_loss': loss}
 
     output_eval_file = os.path.join(args.output_dir, eval_results_filename)
     with open(output_eval_file, "w") as writer:
@@ -693,7 +683,6 @@ def do_evaluation(processor, args, label_list, tokenizer, model, device, tr_loss
             logger.info("  %s = %s", key, str(result[key]))
             writer.write("%s = %s\n" % (key, str(result[key])))
         logger.info("\n\n\n")
-
 
     output_pred_file = os.path.join(args.output_dir, eval_prediction_filename)
     with open(output_pred_file, "w") as writer:
@@ -707,10 +696,5 @@ def do_evaluation(processor, args, label_list, tokenizer, model, device, tr_loss
             writer.write("%s\t%s\t%s\t%s\n" % (gold_label, pred_label, text_a, text_b))
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
-
-
-
-
-

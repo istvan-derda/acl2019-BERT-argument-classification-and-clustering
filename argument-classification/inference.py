@@ -10,11 +10,11 @@ Usage: python inference.py
 
 """
 
+import numpy as np
+import torch
 from pytorch_pretrained_bert.modeling import BertForSequenceClassification
 from pytorch_pretrained_bert.tokenization import BertTokenizer
-import torch
 from torch.utils.data import TensorDataset, DataLoader, SequentialSampler
-import numpy as np
 
 from train import InputExample, convert_examples_to_features
 

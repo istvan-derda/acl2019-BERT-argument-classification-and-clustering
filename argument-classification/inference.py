@@ -48,7 +48,7 @@ input_examples = [
                  text_b='Zoos are detrimental to animals\' physical health.',
                  label='NoArgument'),
     InputExample(text_a='autonomous cars',
-                 text_b='The carbon-footprint is worse than combustion-engines.',
+                 text_b='The carbon-foorefactor extract to functiontprint is worse than combustion-engines.',
                  label='Argument_against'),
     InputExample(text_a='eating vegetables',
                  text_b='The carbon-footprint is worse than combustion-engines.',
@@ -80,15 +80,45 @@ input_examples = [
     InputExample(text_a='sex education in schools',
                  text_b='I had sex education in school.',
                  label='NoArgument'),
-    InputExample(text_a="Saddam Hussein is gone and Iraq is now functioning as one of very few democracies in the Middle East",
-                 text_b="It's important to be clear that this debate is looking at the results of the Iraq war and, by any definition Iraq is in a much more stable and secure position than it was in 2003 when American, British and other international troops arrived in the country.",
-                 label='NoArgument'),  # ok?
+    InputExample(
+        text_a="Saddam Hussein is gone and Iraq is now functioning as one of very few democracies in the Middle East",
+        text_b="It's important to be clear that this debate is looking at the results of the Iraq war and, by any definition Iraq is in a much more stable and secure position than it was in 2003 when American, British and other international troops arrived in the country.",
+        label='NoArgument'),  # ok?
     InputExample(text_a="Punishing objectively harmful conduct",
                  text_b="They said that they would come back and kill my parents if I didn’t do as they said.”[i] Once inducted into the army, children are vulnerable to abuse and exploitation.",
                  label='NoArgument'),  # ok?
     InputExample(text_a="Multiple vaccines cause no harm",
                  text_b="No evidence exists that there is a link between MMR or any multiple vaccine and the development of autism.",
                  label='Argument_for'),  # ok?
+    # sentences from args.me with query
+    InputExample(text_a="Should stem cell research be expanded?",
+                 text_b="There is also stem cell research which is not directly related to stem cell research which is also being banned in the United States.",
+                 label='NoArgument'),
+    InputExample(text_a="Should stem cell research be expanded?",
+                 text_b="He says, “My opponent has argued that abortion is a good idea not that stem cell embryonic stem cell research should be expanded.” However, in my last post, I clearly said, “Embryonic stem cell research needs to expand because it can save more lives!” My opponent also states, “This is extremely irrelevant to debate and as much as the child could be a criminal, they could equally be the next Shakespeare or Mozart.” Two things are wrong with this claim.",
+                 label='Argument_for'),
+    InputExample(text_a="Should stem cell research be expanded?",
+                 text_b="My opponent has argued that abortion is a good idea not that stem cell embryonic stem cell research should be expanded.",
+                 label='NoArgument'),
+    InputExample(text_a="Do we need sex education in schools?",
+                 text_b='I believe that education is necessary, but we do not need "schools" for it.',
+                 label='Argument_against'),
+    InputExample(text_a="Do we need sex education in schools?",
+                 text_b='Pro has argued that we need to do away with schools.',
+                 label='NoArgument'),
+    InputExample(text_a="Do we need sex education in schools?",
+                 text_b='Thus, we need to uphold my standard of "monitoring education level in public high schools", because we NEED a standard to uphold education by.',
+                 label='NoArgument'),
+    # sentences from args.me with topic
+    InputExample(text_a="Do we need sex education in schools?",
+                 text_b='I believe that education is necessary, but we do not need "schools" for it.',
+                 label='Argument_against'),
+    InputExample(text_a="Do we need sex education in schools?",
+                 text_b='Pro has argued that we need to do away with schools.',
+                 label='NoArgument'),
+    InputExample(text_a="Do we need sex education in schools?",
+                 text_b='Thus, we need to uphold my standard of "monitoring education level in public high schools", because we NEED a standard to uphold education by.',
+                 label='NoArgument'),
 ]
 
 

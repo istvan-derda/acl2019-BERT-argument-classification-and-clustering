@@ -80,6 +80,15 @@ input_examples = [
     InputExample(text_a='sex education in schools',
                  text_b='I had sex education in school.',
                  label='NoArgument'),
+    InputExample(text_a="Saddam Hussein is gone and Iraq is now functioning as one of very few democracies in the Middle East",
+                 text_b="It's important to be clear that this debate is looking at the results of the Iraq war and, by any definition Iraq is in a much more stable and secure position than it was in 2003 when American, British and other international troops arrived in the country.",
+                 label='NoArgument'),  # ok?
+    InputExample(text_a="Punishing objectively harmful conduct",
+                 text_b="They said that they would come back and kill my parents if I didn’t do as they said.”[i] Once inducted into the army, children are vulnerable to abuse and exploitation.",
+                 label='NoArgument'),  # ok?
+    InputExample(text_a="Multiple vaccines cause no harm",
+                 text_b="No evidence exists that there is a link between MMR or any multiple vaccine and the development of autism.",
+                 label='Argument_for'),  # ok?
 ]
 
 

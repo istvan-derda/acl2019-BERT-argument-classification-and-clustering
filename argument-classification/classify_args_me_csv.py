@@ -1,6 +1,5 @@
 import csv
 import time
-from pprint import pprint
 
 from inference import ArgumentClassificationInput, BertArgumentClassifier
 
@@ -18,10 +17,8 @@ def main():
             reader = csv.DictReader(in_file)
             writer = csv.DictWriter(out_file, fieldnames=['sent_id', 'topic_text', 'predicted_stance', 'sent_text'])
             writer.writeheader()
-            i = 0
 
-            for line in reader:
-                i = i + 1
+            for line_numer, line in enumerate(reader):
 
                 sentences_dict = eval(line['sentences'])
                 topic = line['conclusion']
@@ -44,11 +41,9 @@ def main():
 
                 # progress indication
                 print(f"starttime: {time.strftime('%H:%M', start_time)}")
-                print(f"progress: {(i * (100 / LINES_COUNT)):3.3f}%")
+                print(f"progress: {(line_numer * (100 / LINES_COUNT)):3.3f}%")
+                print(f"last processed: line {line_numer}")
                 print(f"--------------------------------------------")
-
-                if i >= 3:
-                    break
 
 
 if __name__ == '__main__':

@@ -1,3 +1,5 @@
 *.tsv
 *.bin
+*.parquet
+*.csv
 .idea

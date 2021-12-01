@@ -1,5 +1,5 @@
 import csv
-import time
+from datetime import datetime
 
 from inference import ArgumentClassificationInput, BertArgumentClassifier
 
@@ -10,7 +10,7 @@ OUT_PATH = "args_with_bert_stance.csv"
 
 def main():
     classificator = BertArgumentClassifier()
-    start_time = time.localtime()
+    start_time = datetime.now()
 
     with open(IN_PATH) as in_file:
         with open(OUT_PATH, 'w') as out_file:
@@ -40,10 +40,16 @@ def main():
                     })
 
                 # progress indication
-                print(f"starttime: {time.strftime('%H:%M', start_time)}")
-                print(f"progress: {(line_number * (100 / LINES_COUNT)):3.3f}%")
-                print(f"last processed: line {line_number}")
-                print(f"--------------------------------------------")
+                progress_percentage = (line_number + 1) * (100 / LINES_COUNT)
+                time_running = datetime.now() - start_time
+                predicted_full_runtime = (100 / progress_percentage) * time_running
+                print(f"starttime: {start_time:%H:%M}\n"
+                      f"progress: {(progress_percentage):3.3f}%\n"
+                      f"running since: {time_running}\n"
+                      f"predicted full runtime: {predicted_full_runtime}\n"
+                      f"last processed: line {line_number}\n"
+                      f"topic: {topic}\n"
+                      f"--------------------------------------------\n")
 
 
 if __name__ == '__main__':

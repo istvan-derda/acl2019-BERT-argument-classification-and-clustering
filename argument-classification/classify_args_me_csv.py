@@ -18,7 +18,7 @@ def main():
             writer = csv.DictWriter(out_file, fieldnames=['sent_id', 'topic_text', 'predicted_stance', 'sent_text'])
             writer.writeheader()
 
-            for line_numer, line in enumerate(reader):
+            for line_number, line in enumerate(reader):
 
                 sentences_dict = eval(line['sentences'])
                 topic = line['conclusion']
@@ -41,8 +41,8 @@ def main():
 
                 # progress indication
                 print(f"starttime: {time.strftime('%H:%M', start_time)}")
-                print(f"progress: {(line_numer * (100 / LINES_COUNT)):3.3f}%")
-                print(f"last processed: line {line_numer}")
+                print(f"progress: {(line_number * (100 / LINES_COUNT)):3.3f}%")
+                print(f"last processed: line {line_number}")
                 print(f"--------------------------------------------")
 
 

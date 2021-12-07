@@ -1,4 +1,5 @@
 import csv
+import sys
 from datetime import datetime
 
 from inference import ArgumentClassificationInput, BertArgumentClassifier
@@ -11,6 +12,7 @@ OUT_PATH = "args_with_bert_stance.csv"
 def main():
     classificator = BertArgumentClassifier()
     start_time = datetime.now()
+    csv.field_size_limit(sys.maxsize)
 
     with open(IN_PATH) as in_file:
         with open(OUT_PATH, 'w') as out_file:

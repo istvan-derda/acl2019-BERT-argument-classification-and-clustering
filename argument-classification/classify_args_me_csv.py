@@ -21,9 +21,6 @@ def main():
             writer.writeheader()
 
             for line_number, line in enumerate(reader):
-                if line_number < 40_000:
-                    continue
-
                 sentences_dict = eval(line['sentences'])
                 topic = line['conclusion']
 

@@ -39,17 +39,18 @@ def main():
                         'sent_text': result.sentence
                     })
 
-                # progress indication
-                progress_percentage = (line_number + 1) * (100 / LINES_COUNT)
-                time_running = datetime.now() - start_time
-                predicted_full_runtime = (100 / progress_percentage) * time_running
-                print(f"starttime: {start_time:%H:%M}\n"
-                      f"progress: {(progress_percentage):3.3f}%\n"
-                      f"running since: {time_running}\n"
-                      f"predicted full runtime: {predicted_full_runtime}\n"
-                      f"last processed: line {line_number}\n"
-                      f"topic: {topic}\n"
-                      f"--------------------------------------------\n")
+                if line_number % 1000 == 0:
+                    # progress indication
+                    progress_percentage = (line_number + 1) * (100 / LINES_COUNT)
+                    time_running = datetime.now() - start_time
+                    predicted_full_runtime = (100 / progress_percentage) * time_running
+                    print(f"starttime: {start_time:%H:%M}\n"
+                          f"progress: {(progress_percentage):3.3f}%\n"
+                          f"running since: {time_running}\n"
+                          f"predicted full runtime: {predicted_full_runtime}\n"
+                          f"last processed: line {line_number}\n"
+                          f"topic: {topic}\n"
+                          f"--------------------------------------------\n")
 
 
 if __name__ == '__main__':

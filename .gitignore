@@ -4,3 +4,4 @@
 *.csv
 .idea
 *.pyc
+*.out

@@ -27,6 +27,7 @@ logging.basicConfig(format='%(message)s',  # "format='%(asctime)s - %(levelname)
                     datefmt='%m/%d/%Y %H:%M:%S',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
+logger.level = 40 # loglevel ERROR
 
 
 class InputExample(object):

@@ -26,7 +26,6 @@ def main():
 
                 sentences_dict = eval(line['sentences'])
                 topic = line['conclusion']
-                print(f"topic: {topic}")
 
                 sentence_texts = [sentence_obj['sent_text'] for sentence_obj in sentences_dict]
                 sentence_ids = [sentence_obj['sent_id'] for sentence_obj in sentences_dict]
